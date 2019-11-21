@@ -9,4 +9,7 @@ const METHODS = require('../constants/methods');
 module.exports = [{
   handler: async ({body}, res) => res.json({im_here: true}),
   method: METHODS.POST
+}, {
+  handler: async ({query}, res) => res.json({im_here: true, ...query}),
+  method: METHODS.GET
 }];

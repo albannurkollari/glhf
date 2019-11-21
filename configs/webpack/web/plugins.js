@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const getSharedPlugins = require('../shared/plugins');
 
 module.exports = ({isProduction = false} = {}) => [
-  new HtmlWebpackPlugin({template: path.resolve('./src/web/index.html')}),
+  new HtmlWebpackPlugin({template: path.resolve('./src/web/index.html'), chunks: ['main']}),
   isProduction &&
   new MiniCssExtractPlugin({
     filename: 'assets/css/[name].[contenthash:8].css',

@@ -20,9 +20,9 @@ module.exports = (_, {mode = 'development'} = {}) => {
     module: {rules: getRules({isProduction})},
     optimization: getOptmization({isProduction}),
     output: {
-      path: path.resolve(__dirname, 'build'),
+      path: path.resolve('build'),
       publicPath: process.env.PUBLIC_PATH || '',
-      filename: 'assets/js/[name].[contenthash:8].js'
+      filename: 'assets/web/js/[name].[contenthash:8].js'
     },
     plugins: getPlugins({isProduction}),
     resolve: {

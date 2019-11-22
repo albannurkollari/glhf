@@ -8,7 +8,7 @@ module.exports = (_, {mode = 'development'} = {}) => {
   const isProduction = !isDevelopment;
 
   return {
-    context: path.resolve(__dirname, 'src'),
+    context: path.resolve('src'),
     devtool: isDevelopment && 'cheap-module-source-map',
     devServer: {
       compress: true,
@@ -16,13 +16,13 @@ module.exports = (_, {mode = 'development'} = {}) => {
       open: true,
       overlay: true
     },
-    entry: {main: path.resolve('./src/web/main.js')},
+    entry: {app: path.resolve('./src/web/app.js')},
     module: {rules: getRules({isProduction})},
     optimization: getOptmization({isProduction}),
     output: {
-      path: path.resolve('build'),
+      path: path.resolve('./build'),
       publicPath: process.env.PUBLIC_PATH || '',
-      filename: 'assets/web/js/[name].[contenthash:8].js'
+      filename: 'assets/web/[name].[hash:8].js'
     },
     plugins: getPlugins({isProduction}),
     resolve: {

@@ -18,7 +18,7 @@ module.exports = (_, {mode = 'development'} = {}) => {
     output: {
       path: path.resolve('build'),
       publicPath: process.env.PUBLIC_PATH || '',
-      filename: 'assets/server/js/[name].js'
+      filename: 'assets/server/[name].js'
     },
     plugins: getSharedPlugins({isProduction}),
     resolve: {

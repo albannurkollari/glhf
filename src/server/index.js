@@ -13,6 +13,7 @@ const ERRORS = {
 };
 const PUBLIC_DIR = path.resolve('./build');
 const PUBLIC_WEB = path.resolve(PUBLIC_DIR, 'index.html');
+const DEV_WEB = path.resolve('./src/web/index.html');
 const ROUTES_DIR = path.resolve(__dirname, './routes');
 
 // Custom Error
@@ -36,8 +37,13 @@ class Router {
     // Initiate middlewaress
     app.use(express.urlencoded({extended: true}));
     app.use(express.json());
+    
+    if (process.env.NODE_ENV === 'production') {
+      app.use(express.static(PUBLIC_DIR));
+      app.get('/', (_, res) => res.sendFile(PUBLIC_WEB));
+    }
+
     app.get('/', (_, res) => res.sendFile(PUBLIC_WEB));
-    app.use(express.static(PUBLIC_DIR));
 
     // Initiate routes
     fs.readdirSync(ROUTES_DIR).map(file => {

@@ -1,3 +1,6 @@
+// Helpers
+import './utils/logger';
+
 /**
  * @description Start of the application.
  * @namespace GLHF

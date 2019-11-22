@@ -19,10 +19,15 @@ const PARSE_SVG = {
   test: /\.svg$/,
   use: ['@svgr/webpack']
 };
+const PARSE_HTML = {
+  test: /\.html$/,
+  use: ['html-loader']
+};
 
 module.exports = (...args) => [
   ...getSharedRules(...args),
   PARSE_CSS(...args),
+  PARSE_HTML,
   PARSE_IMAGES,
   PARSE_SVG
 ];

@@ -51,6 +51,7 @@
     "webpack-dev-server": "^3.9.0",
     "webpack-node-externals": "^1.7.2",
     "webpackbar": "^4.0.0",
+    "yargs": "^15.0.2",
     "yarn": "^1.19.1"
   },
   "dependencies": {

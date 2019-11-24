@@ -1,20 +1,22 @@
 // Libraries and enviromental configs
-require('dotenv/config');
-const chalk = require('chalk');
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+require("dotenv/config");
+const chalk = require("chalk");
+const express = require("express");
+const fs = require("fs");
+const webpack = require("webpack");
+const generateWebpackConfig = require("../../configs/webpack");
+const webpackMiddlewares = {
+  dev: require("webpack-dev-middleware"),
+  hot: require("webpack-hot-middleware")
+};
+const PATHS = require("../../configs/webpack/shared");
 
 // Constants
-const DEFAULT_PATH = '/';
+const DEFAULT_PATH = "/";
 const ERRORS = {
-  1000: 'Express failed to initialize!',
-  2000: 'Given `port` argument is not a number!'
+  1000: "Express failed to initialize!",
+  2000: "Given `port` argument is not a number!"
 };
-const PUBLIC_DIR = path.resolve('./build');
-const PUBLIC_WEB = path.resolve(PUBLIC_DIR, 'index.html');
-const DEV_WEB = path.resolve('./src/web/index.html');
-const ROUTES_DIR = path.resolve(__dirname, './routes');
 
 // Custom Error
 class ServerError extends Error {
@@ -34,28 +36,34 @@ class Router {
       throw new ServerError(ERRORS[1000]);
     }
 
-    // Initiate middlewaress
-    app.use(express.urlencoded({extended: true}));
-    app.use(express.json());
-    
-    if (process.env.NODE_ENV === 'production') {
-      app.use(express.static(PUBLIC_DIR));
-      app.get('/', (_, res) => res.sendFile(PUBLIC_WEB));
-    }
+    const config = generateWebpackConfig({ mode });
+    const { publicPath } = config.output;
+    const compiler = webpack(config);
 
-    app.get('/', (_, res) => res.sendFile(PUBLIC_WEB));
+    // Initiate middlewaress
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
+
+    if (process.env.NODE_ENV === "production") {
+      app.use(express.static(PATHS.BUILD));
+      app.get("/", (_, res) => res.sendFile(PATHS.STATIC_WEB));
+    }
+    else {
+      app.use(webpackMiddlewares.dev(compiler, { noInfo: true, publicPath }));
+      app.use(webpackMiddlewares.hot(compiler));
+    }
 
     // Initiate routes
     fs.readdirSync(ROUTES_DIR).map(file => {
-      const fileName = `/${file.replace(/\.js$/, '')}`;
+      const fileName = `/${file.replace(/\.js$/, "")}`;
       const router = express.Router();
       const routes = require(`${ROUTES_DIR}${fileName}`);
-      
-      routes.forEach(({handler, method, path = DEFAULT_PATH}, i) => {
+
+      routes.forEach(({ handler, method, path = DEFAULT_PATH }, i) => {
         const count = i + 1;
-        const symbol = (i === 0 ? '\n' : '') + chalk.hex('#1e90ff')(count % 2 ? '└┬┴┬┘' : '┌┴┬┴┐');
-        const httpMethod = chalk.hex('#ffd36c')(method.toUpperCase());
-        const fullPath = chalk.hex('#6cfff9')(`${fileName}${path}`);
+        const symbol = (i === 0 ? "\n" : "") + chalk.hex("#1e90ff")(count % 2 ? "└┬┴┬┘" : "┌┴┬┴┐");
+        const httpMethod = chalk.hex("#ffd36c")(method.toUpperCase());
+        const fullPath = chalk.hex("#6cfff9")(`${fileName}${path}`);
 
         router[method](path, handler);
         console.log(`${symbol} ${chalk(`[${count}]`)} -> ${httpMethod} ${fullPath}`);
@@ -70,7 +78,7 @@ class Router {
 
 // Application
 class App extends Router {
-  port = 8080
+  port = 8080;
 
   constructor(port) {
     super();
@@ -83,9 +91,10 @@ class App extends Router {
       throw new ServerError(ERRORS[2000]);
     }
 
-    this.app.listen(
-      this.port,
-      () => console.log(chalk`{blue \nListening to {green.bold http://localholst:${this.port}}}`)
+    this.app.listen(this.port, () =>
+      console.log(
+        chalk`{blue \nListening to {green.bold http://localholst:${this.port}}}`
+      )
     );
   };
 }

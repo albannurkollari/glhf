@@ -4,6 +4,7 @@ const chalk = require("chalk");
 const express = require("express");
 const fs = require("fs");
 const webpack = require("webpack");
+const generateArgs = require('../../configs/webpack/shared/yargs');
 const generateWebpackConfig = require("../../configs/webpack");
 const webpackMiddlewares = {
   dev: require("webpack-dev-middleware"),
@@ -36,20 +37,22 @@ class Router {
       throw new ServerError(ERRORS[1000]);
     }
 
-    const config = generateWebpackConfig({ mode });
-    const { publicPath } = config.output;
+    debugger;
+
+    const isProduction = generateArgs('p');
+    const {devServer, ...config} = generateWebpackConfig({ isProduction });
     const compiler = webpack(config);
 
     // Initiate middlewaress
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
 
-    if (process.env.NODE_ENV === "production") {
+    if (isProduction) {
       app.use(express.static(PATHS.BUILD));
       app.get("/", (_, res) => res.sendFile(PATHS.STATIC_WEB));
     }
     else {
-      app.use(webpackMiddlewares.dev(compiler, { noInfo: true, publicPath }));
+      app.use(webpackMiddlewares.dev(compiler, devServer));
       app.use(webpackMiddlewares.hot(compiler));
     }
 
@@ -86,17 +89,14 @@ class App extends Router {
     this.port = port || this.port;
   }
 
+  log = () => console.log(chalk`{blue \nListening to {green.bold http://localholst:${this.port}}}`)
   start = () => {
     if (isNaN(this.port)) {
       throw new ServerError(ERRORS[2000]);
     }
 
-    this.app.listen(this.port, () =>
-      console.log(
-        chalk`{blue \nListening to {green.bold http://localholst:${this.port}}}`
-      )
-    );
-  };
+    this.app.listen(this.port, this.log);
+  }
 }
 
 // Start here

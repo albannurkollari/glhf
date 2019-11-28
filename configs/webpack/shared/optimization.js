@@ -7,15 +7,15 @@ module.exports = ({isProduction = false} = {}) => ({
     // Minify your JavaScript
     new TerserWebpackPlugin({
       terserOptions: {
-        compress: { comparisons: false },
-        mangle: { safari10: true },
-        output: { comments: false, ascii_only: true },
+        compress: {comparisons: false},
+        mangle: {safari10: true},
+        output: {comments: false, ascii_only: true},
         warnings: false
       }
     }),
     new OptimizeCssAssetsPlugin({
       cssProcessorPluginOptions: {
-        preset: ['default', { discardComments: { removeAll: true } }]
+        preset: ['default', {discardComments: {removeAll: true}}]
       }
     })
   ],

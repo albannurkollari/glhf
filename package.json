@@ -7,13 +7,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build:dev": "rm -rf build && webpack --mode development --config configs/webpack/server && webpack --mode development --config configs/webpack/web",
+    "build": "rm -rf build && webpack --mode development --config configs/webpack/server && webpack --mode development --config configs/webpack/web",
     "build:prod": "rm -rf build && webpack --mode production --config configs/webpack/server && webpack --mode production --config configs/webpack/web",
-    "start": "webpack-dev-server --mode development --config configs/webpack/web",
+    "start": "nodemon ./src/server",
     "start:debug": "webpack-dev-server --mode development --config configs/webpack",
-    "server": "nodemon .src/server",
     "server:debug": "nodemon --inspect ./src/server",
-    "server:start": "webpack-dev-server --mode development --config configs/webpack/server",
     "webpack:debug": "node --inspect ./node_modules/webpack/bin/webpack.js"
   },
   "devDependencies": {
@@ -48,7 +46,9 @@
     "url-loader": "^2.2.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
+    "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.9.0",
+    "webpack-hot-middleware": "^2.25.0",
     "webpack-node-externals": "^1.7.2",
     "webpackbar": "^4.0.0",
     "yargs": "^15.0.2",

@@ -2,7 +2,7 @@ const yargs = require("yargs");
 
 module.exports = key => {
   const { argv } = yargs
-    .usage("yarn node ./server.js --p")
+    .usage("yarn nodemon ./src/server --p")
     .option("prod", {
       describe: "Run server in webpack production mode",
       alias: "p",

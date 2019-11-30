@@ -1,14 +1,36 @@
+// Libraries
+import React from 'react';
+import {render} from 'react-dom';
+
+// Views
+import Main from 'web/views/main';
+
 // Helpers
-import './utils/logger';
+import 'web/utils/logger';
 
 /**
  * @description Start of the application.
  * @namespace GLHF
  */
-(async function app () {
-  debugger;
+(async function app() {
   // Start adding code here...
   if (logger instanceof Function) {
-    logger([{msg: 'App started'}, {msg: 'Dona is eating KNÄCKEBRÖD and she is delighted of it!', style: {color: 'crimson'}}], {method: 'group'});
+    logger({
+      msg: 'App started',
+      style: {
+        fontSize: '20px',
+        background: '#dbfbbb',
+        color: 'dodgerblue'
+      }
+    });
+    logger({user: 'Alban Nurkollari', password: '123'})
   }
+
+  const main = document.querySelector('main');
+
+  if (!(main instanceof Element)) {
+    throw new Error('Could not find the main element in DOM!');
+  }
+
+  render(<Main />, main);
 })();

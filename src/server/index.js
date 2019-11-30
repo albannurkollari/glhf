@@ -43,6 +43,10 @@ class Router {
     const {devServer, ...config} = generateWebpackConfig({isProduction});
     const compiler = webpack(config);
 
+    if (process.env.NODE_ENV === undefined) {
+      process.env.NODE_ENV = isProduction ? 'production' : 'development';
+    }
+
     // Initiate middlewaress
     app.use(express.urlencoded({extended: true}));
     app.use(express.json());
@@ -68,7 +72,7 @@ class Router {
         const httpMethod = chalk.hex('#ffd36c')(method.toUpperCase());
 
         router[method](path, handler);
-        console.log(`${symbol} ${chalk(`[${count}]`)} -> ${httpMethod} ${chalk.hex('#6cfff9')(path)}`);
+        console.log(`${symbol} ${chalk(`[${count}]`)} -> ${httpMethod} ${chalk.hex('#6cfff9')(`${fileName}${path}`)}`);
       });
 
       app.use(fileName, router);

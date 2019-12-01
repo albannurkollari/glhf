@@ -1,6 +1,6 @@
 // Libraries
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 // Helpers
 import {generateClassNames} from 'web/utils/common';
@@ -9,33 +9,67 @@ import {generateClassNames} from 'web/utils/common';
 import './styles.css';
 
 const Input = ({id, label, classes, disabled, auto, placeholder, value, onChange}) => {
+  const positioned = label ? {[`pos-${label?.pos ?? 'left'}`] : true} : {};
   const className = generateClassNames({
     'ninjaurl__common-input': true,
+    ...positioned,
     ...classes
   });
-  const optionalProps = {
-    ...(disabled && {disabled}),
-    ...(id && {id})
-  };
+  const fieldId = id ? `field-${id}` : '';
 
-  return <div className={className} {...optionalProps}>
-    {label &&
-      <label {...{...(id && {htmlFor: id})}}>{label}</label>
+  const inputRef = useRef();
+  const [isDirty, setIsDirty] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const focusIn = () => setIsFocused(true);
+  const focusOut = () => setIsFocused(false);
+
+  console.log(isFocused);
+  
+  useEffect(() => {
+    if (!(inputRef.current instanceof Element)) {
+      return;
     }
-    <input
-      type='text'
-      autoComplete={auto}
-      disabled={disabled}
-      value={value}
-      placeholder={placeholder}
-      onChange={({target: {value}}) => onChange?.(value)}
-    />
-  </div>;
+
+    inputRef.current.addEventListener('focusin', focusIn);
+    inputRef.current.addEventListener('focusout', focusOut);
+
+    return () => {
+      inputRef.current.removeEventListener('focusin', focusIn);
+      inputRef.current.removeEventListener('focusout', focusOut);
+    };
+  }, []);
+
+  return <fieldset {...{...(id && {id})}}>
+    <div className={className} disabled={disabled} is-dirty={isDirty.toString()}>
+      {label && <label {...{...(id && {htmlFor: id})}}>{label?.value ?? label}</label>}
+      <div className='wrapper'>
+        <input
+          ref={inputRef}
+          {...{...(fieldId && {id: fieldId})}}
+          type='text'
+          autoComplete={auto}
+          value={value}
+          placeholder={label?.pos === 'within' && !isFocused ? '' : placeholder}
+          spellCheck={false}
+          onChange={({target: {value}}) => {
+            setIsDirty(value !== '');
+            onChange?.(value);
+          }}
+        />
+      </div>
+    </div>
+  </fieldset>;
 };
 
 Input.propTypes = {
   id: PropTypes.string,
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      value: PropTypes.string,
+      pos: PropTypes.oneOf(['top', 'right', 'left', 'within'])
+    })
+  ]),
   disabled: PropTypes.bool,
   classes: PropTypes.objectOf(PropTypes.bool),
   auto: PropTypes.oneOf(['current-password', 'new-password', 'username', 'off']),

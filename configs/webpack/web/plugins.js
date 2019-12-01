@@ -6,14 +6,11 @@ const {projectPaths: PATHS} = process;
 
 module.exports = ({isProduction = false} = {}) =>
   [
-    new HtmlWebpackPlugin({
-      template: PATHS.DEV_WEB
-    }),
+    new HtmlWebpackPlugin({template: PATHS.DEV_WEB}),
     new HotModuleReplacementPlugin(),
-    isProduction &&
     new MiniCssExtractPlugin({
-      filename: "assets/css/[name].[contenthash:8].css",
-      chunkFilename: "assets/css/[name].[contenthash:8].chunk.css"
+      filename: "assets/web/css/[name].[contenthash:8].css",
+      chunkFilename: "assets/web/css/[name].[contenthash:8].chunk.css"
     }),
     ...getSharedPlugins({isProduction})
   ].filter(Boolean);

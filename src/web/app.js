@@ -5,6 +5,9 @@ import {render} from 'react-dom';
 // Views
 import Main from 'web/views/main';
 
+// Stylesheet(s)
+import 'web/css/reset.css';
+
 // Helpers
 import 'web/utils/logger';
 

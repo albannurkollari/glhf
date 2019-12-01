@@ -9,15 +9,25 @@ import Input from 'web/components/Input';
 import './styles.css';
 
 const Main = () => {
-  const [value, setValue] = useState('');
+  const [{username, password}, setCredentials] = useState({
+    username: '',
+    password: ''
+  });
 
   return <>
     <Input
       /* label={{value: 'URL', pos: 'within'}} */
-      label='URL'
-      id='bani-input'
-      value={value}
-      onChange={setValue}
+      label='Username'
+      id='myproj-username'
+      value={username}
+      onChange={username => setCredentials({username, password})}
+    />
+    <Input
+      /* label={{value: 'URL', pos: 'within'}} */
+      label='Password'
+      id='myproj-password'
+      value={password}
+      onChange={password => setCredentials({username, password})}
     />
   </>;
 };

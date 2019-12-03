@@ -26,7 +26,6 @@ import 'web/utils/logger';
         color: 'dodgerblue'
       }
     });
-    logger({user: 'Alban Nurkollari', password: '123'})
   }
 
   const main = document.querySelector('main');

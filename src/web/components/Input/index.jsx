@@ -20,32 +20,27 @@ const Input = ({id, label, classes, disabled, auto, placeholder, value, onChange
   const inputRef = useRef();
   const [isDirty, setIsDirty] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const focusIn = () => setIsFocused(true);
-  const focusOut = () => setIsFocused(false);
-
-  console.log(isFocused);
+  const onFocus = ({type}) => setIsFocused(type === 'focusin');
   
   useEffect(() => {
     if (!(inputRef.current instanceof Element)) {
       return;
     }
 
-    inputRef.current.addEventListener('focusin', focusIn);
-    inputRef.current.addEventListener('focusout', focusOut);
+    inputRef.current.addEventListener('focusin focusout', onFocus);
 
     return () => {
-      inputRef.current.removeEventListener('focusin', focusIn);
-      inputRef.current.removeEventListener('focusout', focusOut);
+      inputRef.current.removeEventListener('focusin focusout', onFocus);
     };
   }, []);
 
   return <fieldset {...{...(id && {id})}}>
     <div className={className} disabled={disabled} is-dirty={isDirty.toString()}>
-      {label && <label {...{...(id && {htmlFor: id})}}>{label?.value ?? label}</label>}
+      {label && <label {...{...(fieldId && {htmlFor: fieldId})}}>{label?.value ?? label}</label>}
       <div className='wrapper'>
         <input
-          ref={inputRef}
           {...{...(fieldId && {id: fieldId})}}
+          ref={inputRef}
           type='text'
           autoComplete={auto}
           value={value}

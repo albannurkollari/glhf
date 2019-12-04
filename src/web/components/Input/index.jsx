@@ -7,6 +7,7 @@ import {generateClassNames} from 'web/utils/common';
 
 // Stylesheet(s)
 import './styles.css';
+const FOCUS_EVENTS = ['focusin', 'focusout'];
 
 const Input = ({id, label, classes, disabled, auto, placeholder, value, onChange}) => {
   const positioned = label ? {[`pos-${label?.pos ?? 'left'}`] : true} : {};
@@ -20,19 +21,22 @@ const Input = ({id, label, classes, disabled, auto, placeholder, value, onChange
   const inputRef = useRef();
   const [isDirty, setIsDirty] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const onFocus = ({type}) => setIsFocused(type === 'focusin');
   
   useEffect(() => {
     if (!(inputRef.current instanceof Element)) {
       return;
     }
 
-    inputRef.current.addEventListener('focusin focusout', onFocus);
+    const onFocus = ({type}) => setIsFocused(type === 'focusin');
 
+    FOCUS_EVENTS.forEach(event => inputRef.current.addEventListener(event, onFocus));
+    
     return () => {
-      inputRef.current.removeEventListener('focusin focusout', onFocus);
+      FOCUS_EVENTS.forEach(event => inputRef.current.removeEventListener(event, onFocus));
     };
   }, []);
+
+  logger(isFocused);
 
   return <fieldset {...{...(id && {id})}}>
     <div className={className} disabled={disabled} is-dirty={isDirty.toString()}>

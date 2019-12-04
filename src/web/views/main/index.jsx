@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 
 // Components
 import Input from 'web/components/Input';
+import Button from 'web/components/Button';
 
 // Stylesheet(s)
 import './styles.css';
@@ -16,19 +17,13 @@ const Main = () => {
 
   return <>
     <Input
-      /* label={{value: 'URL', pos: 'within'}} */
-      label='Username'
       id='myproj-username'
+      label={{value: 'URL', pos: 'within'}}
       value={username}
       onChange={username => setCredentials({username, password})}
     />
-    <Input
-      /* label={{value: 'URL', pos: 'within'}} */
-      label='Password'
-      id='myproj-password'
-      value={password}
-      onChange={password => setCredentials({username, password})}
-    />
+    <Button
+      id='myproj-shorten-url' />
   </>;
 };
 

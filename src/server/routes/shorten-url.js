@@ -11,7 +11,7 @@ const ShortenURL = require('../../db/models/url');
 module.exports = [{
   handler: async ({body: {url}}, res) => {
     if (!url || typeof url !== 'string') {
-      return res.json({shortenURL: url});
+      return res.json({value: url});
     }
 
     const value = hashURL(url);

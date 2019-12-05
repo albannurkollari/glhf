@@ -26,11 +26,9 @@ const Main = () => {
   });
 
   useEffect(() => {
-    if (!shouldShorten) {
+    if (!shouldShorten || url === '') {
       return;
     }
-
-    debugger;
 
     (async () => {
       try {

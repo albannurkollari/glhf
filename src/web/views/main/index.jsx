@@ -20,13 +20,13 @@ const Main = () => {
     onKeyUp: ({target: {value}, keyCode}) => {
       if (keyCode === 13) {
         setURL(value);
-        setShouldShorten(true);
+        setShouldShorten(value !== '');
       }
     }
   });
 
   useEffect(() => {
-    if (!shouldShorten || url === '') {
+    if (!shouldShorten) {
       return;
     }
 
@@ -65,7 +65,7 @@ const Main = () => {
     <Button
       id='ninjaurl__url-shorten-btn'
       label='Shorten'
-      onClick={() => setShouldShorten(true)}
+      onClick={() => setShouldShorten(url !== '')}
     />
     {shortenedURL &&
       <div className='ninjaurl__url-shortened'>

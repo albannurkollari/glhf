@@ -11,6 +11,8 @@ const DEFAULT_FORMATTING = {
   fontSize: '14px'
 };
 
+const PRIMITIVES = [Boolean, undefined, Number, String, null];
+const isPrimitive = _var => PRIMITIVES.some(primitive => _var?.constructor === primitive);
 const sanitizeArray = arr => Array.isArray(arr) ? arr : [arr];
 const sanitizeCssRule = rule => rule.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 const sanitizeCss = (css = {}) => !css || css.constructor !== Object
@@ -25,7 +27,7 @@ const logger = (messages, {method = METHODS.LOG} = {}) => {
     throw new Error('Given console method is not supported!')
   }
 
-  if (typeof messages === 'string') {
+  if (isPrimitive(messages)) {
     messages = {msg: messages};
   }
 

@@ -14,21 +14,13 @@ const webpackMiddlewares = {
 };
 const {projectPaths: PATHS} = process;
 
+// Helpers
+const connectToMongoDB = require('./helpers/connection'); 
+const ServerError = require('./helpers/errors');
+const doRedirect = require('./helpers/redirect');
+
 // Constants
 const DEFAULT_PATH = '/';
-const ERRORS = {
-  1000: 'Express failed to initialize!',
-  2000: 'Given `port` argument is not a number!'
-};
-
-// Custom Error
-class ServerError extends Error {
-  constructor(message) {
-    super(message);
-
-    this.stack = this.stack.replace(/^Error/, this.constructor.name);
-  }
-}
 
 // Express Router
 class Router {
@@ -36,7 +28,7 @@ class Router {
     const app = express();
 
     if (!(app instanceof Object)) {
-      throw new ServerError(ERRORS[1000]);
+      throw new ServerError(1000);
     }
 
     const isProduction = generateArgs('p');
@@ -47,38 +39,61 @@ class Router {
       process.env.NODE_ENV = isProduction ? 'production' : 'development';
     }
 
-    // Initiate middlewaress
-    app.use(express.urlencoded({extended: true}));
-    app.use(express.json());
+    this.app = app;
+    this.initialized = new Promise(resolve => {
+      // Initiate middlewaress
+      app.use(express.urlencoded({extended: true}));
+      app.use(express.json());
 
-    if (isProduction) {
-      app.use(express.static(PATHS.BUILD));
-      app.get('/', (_, res) => res.sendFile(PATHS.STATIC_WEB));
-    }
-    else {
-      app.use(webpackMiddlewares.dev(compiler, devServer));
-      app.use(webpackMiddlewares.hot(compiler));
-    }
+      if (isProduction) {
+        app.use(express.static(PATHS.BUILD));
+        app.get('/', (_, res) => res.sendFile(PATHS.STATIC_WEB));
+      }
+      else {
+        this.devServerInstance = webpackMiddlewares.dev(compiler, devServer);
+        this.HRMinstance = webpackMiddlewares.hot(compiler);
 
-    // Initiate routes
-    fs.readdirSync(PATHS.ROUTES).map(file => {
-      const fileName = `/${file.replace(/\.js$/, '')}`;
-      const router = express.Router();
-      const routes = require(path.resolve(PATHS.ROUTES, file));
+        app.use(this.devServerInstance);
+        app.use(this.HRMinstance);
+      }
 
-      routes.forEach(({handler, method, path = DEFAULT_PATH}, i) => {
-        const count = i + 1;
-        const symbol = (i === 0 ? '\n' : '') + chalk.hex('#1e90ff')(count % 2 ? '└┬┴┬┘' : '┌┴┬┴┐');
-        const httpMethod = chalk.hex('#ffd36c')(method.toUpperCase());
+      const allRoutes = fs.readdirSync(PATHS.ROUTES);
+      const logs = [];
 
-        router[method](path, handler);
-        console.log(`${symbol} ${chalk(`[${count}]`)} -> ${httpMethod} ${chalk.hex('#6cfff9')(`${fileName}${path}`)}`);
+      app.get('/:hashedURL', ({path}, res, next) => {
+        const _path = path.slice(1);
+
+        allRoutes.some(route => route.includes(_path))
+          ? next()
+          : doRedirect(_path, res);
       });
 
-      app.use(fileName, router);
-    });
+      // Initiate routes
+      allRoutes.map(file => {
+        const fileName = `/${file.replace(/\.js$/, '')}`;
+        const router = express.Router();
+        const routes = require(path.resolve(PATHS.ROUTES, file));
 
-    this.app = app;
+        routes.forEach(({handler, method, path = DEFAULT_PATH}, i) => {
+          const count = i + 1;
+          const symbol = (i === 0 ? '\n' : '') + chalk.hex('#1e90ff')(count % 2 ? '└┬┴┬┘' : '┌┴┬┴┐');
+          const httpMethod = chalk.hex('#ffd36c')(method.toUpperCase());
+
+          router[method](path, handler);
+          logs.push({count, fileName, httpMethod, path, symbol});
+        });
+
+        app.use(fileName, router);
+      });
+
+      this.devServerInstance.waitUntilValid(() => {
+        logs.forEach(({count, fileName, httpMethod, path, symbol}) => {
+          console.log(`${symbol} ${chalk(`[${count}]`)} -> ${httpMethod} ${chalk.hex('#6cfff9')(`${fileName}${path}`)}`);
+        });
+
+        resolve(true);
+      });
+    });
   }
 }
 
@@ -89,13 +104,27 @@ class App extends Router {
   constructor(port) {
     super();
 
+    this.dbConnect = connectToMongoDB;
     this.port = port || this.port;
   }
 
   log = () => console.log(chalk`{blue \nListening to {green.bold http://localholst:${this.port}}}`)
-  start = () => {
+  start = async () => {
     if (isNaN(this.port)) {
-      throw new ServerError(ERRORS[2000]);
+      throw new ServerError(2000);
+    }
+
+    if (!await this.initialized) {
+      return;
+    }
+    
+    this.isConnected = await this.dbConnect(process.env);
+
+    if (!this.isConnected) {
+      throw new ServerError(3000);
+    }
+    else {
+      console.log(chalk`<-- {inverse ${process.env.DB_CONNECTED_MSG || 'Connected to DB!'}} -->`);
     }
 
     this.app.listen(this.port, this.log);

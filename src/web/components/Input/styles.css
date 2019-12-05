@@ -1,0 +1,146 @@
+@value s-base: .ninjaurl__common-input;
+@value s-wrapper: .ninjaurl__common-input > .wrapper;
+@value s-input: .ninjaurl__common-input > .wrapper > input;
+
+s-base {  
+  --input-height: 40px;
+  --wrapper-padding: 5px;
+}
+
+s-base, s-base * {
+  transition: var(--smooth-transition);
+}
+
+s-wrapper {
+  padding: var(--wrapper-padding);
+  transition: all .25s ease-in-out;
+  min-width: 400px;
+  max-width: 560px;
+  width: 100%;
+  /* -webkit-box-shadow: inset 0px -1px 0px 0px rgba(192,192,192,1);
+  -moz-box-shadow: inset 0px -1px 0px 0px rgba(192,192,192,1);
+  box-shadow: inset 0px -1px 0px 0px rgba(192,192,192,1); */
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  
+}
+
+s-wrapper:before,
+s-wrapper:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 3px;
+  opacity: 0;
+  transition: var(--smooth-transition) .15s;
+}
+
+s-wrapper:before {
+  right: 50%;
+  background: rgb(0,212,255);
+  background: linear-gradient(90deg, rgba(0,212,255,0.6530987394957983) 25%, rgba(9,9,121,1) 100%);
+}
+
+s-wrapper:after {
+  left: 50%;
+  background: rgb(9,9,121);
+  background: linear-gradient(90deg, rgba(9,9,121,1) 0%, rgba(0,212,255,0.6502976190476191) 76%);
+}
+
+s-wrapper:focus-within:before,
+s-wrapper:focus-within:after {
+  width: 50%;
+  opacity: 1;
+}
+
+s-wrapper:disabled {
+  opacity: 0.3;
+}
+
+s-input {
+  outline: none;
+  border: none;
+  background: none;
+  width: 100%;
+  height: var(--input-height);
+  padding: 0;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+s-base.pos-left,
+s-base.pos-right {
+  display: grid;
+  grid-auto-flow: column;
+  column-gap: 5px;
+}
+
+s-base.pos-left {
+  grid-auto-columns: min-content max-content;
+}
+
+s-base.pos-right {
+  grid-auto-columns: max-content min-content;
+}
+
+s-base.pos-left > label,
+s-base.pos-right > label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+s-base.pos-within > label {
+  /* top: calc(50% - calc(var(--input-height) / 2) - 1px); */
+  position: absolute;
+  top: 50%;
+  left: var(--wrapper-padding);
+  padding-left: var(--wrapper-padding);
+  backface-visibility: hidden;
+  transform: translateY(-50%);
+}
+
+s-base.pos-within > .wrapper {
+  width: 100%;
+}
+
+s-base.pos-within:focus-within > label,
+s-base.pos-within[is-dirty='true'] > label {
+  top: -20px;
+  padding: 5px;
+  border: 1px solid white;
+  border-right: none;
+  color: white;
+  transform: none;
+}
+
+s-base.pos-within:focus-within > label:after {
+  content: '';
+  position: absolute;
+  border-right: 1px solid white;
+  height: 100%;
+  top: 0;
+  right: 0;
+  backface-visibility: hidden;
+  transition: var(--smooth-transition);
+}
+
+s-base.pos-within[is-dirty='true'] > label:after {
+  content: '';
+  position: absolute;
+  border-right: 1px solid white;
+  transform: skewX(24deg);
+  height: calc(100% + 1px);
+  top: -1px;
+  right: -5px;
+  border-top-right-radius: 3px;
+  backface-visibility: hidden;
+}
+
+s-base:focus-within > .wrapper,
+s-base[is-dirty='true'] > .wrapper {
+  background-color: white;
+}

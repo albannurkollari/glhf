@@ -8,7 +8,8 @@ const PATHS = Object.entries({
   SERVER_ROUTES_DIR: '../src/server/routes',
   STATIC_WEB: '../build/index.html',
   DEV_WEB: '../src/web/index.html',
-  ROUTES: '../src/server/routes'
+  ROUTES: '../src/server/routes',
+  ENTRY_CSS: '../src/web/css/reset.css'
 }).reduce((acc, [k, v]) => ({...acc, [k]: path.resolve(__dirname, v)}), {});
 
 PATHS.PUBLIC = process.env.PUBLIC_PATH || '';

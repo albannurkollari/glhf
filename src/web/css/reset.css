@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  background: #F3904F;
+  background: -webkit-linear-gradient(to top, #3B4371, #F3904F);
+  background: linear-gradient(to top, #3B4371, #F3904F);
+  height: 100vh;
+}
+
+body, body * {
+  position: relative;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}

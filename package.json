@@ -21,7 +21,6 @@
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-react-constant-elements": "^7.6.3",
-    "@babel/plugin-transform-react-inline-elements": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
@@ -58,6 +57,8 @@
     "core-js": "^3.4.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "md5": "^2.2.1",
+    "mongoose": "^5.7.13",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"

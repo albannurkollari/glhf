@@ -3,10 +3,16 @@ const getSharedRules = require('../shared/rules');
 
 const PARSE_CSS = ({isProduction = false} = {}) => ({
   test: /\.css$/,
-  use: [isProduction ? MiniCssExtractLoader : 'style-loader', 'css-loader']
+  use: [
+    {loader: MiniCssExtractLoader, options: {hot: !isProduction}},
+    {
+      loader: 'css-loader',
+      options: {modules: {mode: 'global'}}
+    }
+  ]
 });
 const PARSE_IMAGES = {
-  test: /\.(png|jpg|gif)$/i,
+  test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i,
   use: {
     loader: 'url-loader',
     options: {

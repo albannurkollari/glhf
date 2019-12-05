@@ -17,6 +17,7 @@ const {projectPaths: PATHS} = process;
 // Helpers
 const connectToMongoDB = require('./helpers/connection'); 
 const ServerError = require('./helpers/errors');
+const doRedirect = require('./helpers/redirect');
 
 // Constants
 const DEFAULT_PATH = '/';
@@ -51,14 +52,24 @@ class Router {
       else {
         this.devServerInstance = webpackMiddlewares.dev(compiler, devServer);
         this.HRMinstance = webpackMiddlewares.hot(compiler);
+
         app.use(this.devServerInstance);
         app.use(this.HRMinstance);
       }
 
+      const allRoutes = fs.readdirSync(PATHS.ROUTES);
       const logs = [];
 
+      app.get('/:hashedURL', ({path}, res, next) => {
+        const _path = path.slice(1);
+
+        allRoutes.some(route => route.includes(_path))
+          ? next()
+          : doRedirect(_path, res);
+      });
+
       // Initiate routes
-      fs.readdirSync(PATHS.ROUTES).map(file => {
+      allRoutes.map(file => {
         const fileName = `/${file.replace(/\.js$/, '')}`;
         const router = express.Router();
         const routes = require(path.resolve(PATHS.ROUTES, file));

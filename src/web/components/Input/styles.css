@@ -1,9 +1,10 @@
 @value s-base: .ninjaurl__common-input;
 @value s-wrapper: .ninjaurl__common-input > .wrapper;
-@value s-input: .ninjaurl__common-input  > .wrapper > input;
+@value s-input: .ninjaurl__common-input > .wrapper > input;
 
-s-base {
-  --smooth-transition: all .25s ease-in-out;
+s-base {  
+  --input-height: 40px;
+  --wrapper-padding: 5px;
 }
 
 s-base, s-base * {
@@ -11,15 +12,16 @@ s-base, s-base * {
 }
 
 s-wrapper {
-  padding: 5px;
-  /* border-bottom: 1px solid #c0c0c0; */
+  padding: var(--wrapper-padding);
   transition: all .25s ease-in-out;
+  min-width: 400px;
+  max-width: 560px;
   width: 100%;
-  min-width: 30px;
-  max-width: 200px;
-  -webkit-box-shadow: inset 0px -1px 0px 0px rgba(192,192,192,1);
+  /* -webkit-box-shadow: inset 0px -1px 0px 0px rgba(192,192,192,1);
   -moz-box-shadow: inset 0px -1px 0px 0px rgba(192,192,192,1);
-  box-shadow: inset 0px -1px 0px 0px rgba(192,192,192,1);
+  box-shadow: inset 0px -1px 0px 0px rgba(192,192,192,1); */
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  
 }
 
 s-wrapper:before,
@@ -28,18 +30,21 @@ s-wrapper:after {
   position: absolute;
   bottom: 0;
   width: 0;
-  height: 2px;
-  background-color: rgb(19, 151, 90);
+  height: 3px;
   opacity: 0;
-  transition: var(--smooth-transition);
+  transition: var(--smooth-transition) .15s;
 }
 
 s-wrapper:before {
   right: 50%;
+  background: rgb(0,212,255);
+  background: linear-gradient(90deg, rgba(0,212,255,0.6530987394957983) 25%, rgba(9,9,121,1) 100%);
 }
 
 s-wrapper:after {
   left: 50%;
+  background: rgb(9,9,121);
+  background: linear-gradient(90deg, rgba(9,9,121,1) 0%, rgba(0,212,255,0.6502976190476191) 76%);
 }
 
 s-wrapper:focus-within:before,
@@ -57,6 +62,7 @@ s-input {
   border: none;
   background: none;
   width: 100%;
+  height: var(--input-height);
   padding: 0;
   line-height: 1;
   overflow: hidden;
@@ -88,10 +94,13 @@ s-base.pos-right > label {
 }
 
 s-base.pos-within > label {
+  /* top: calc(50% - calc(var(--input-height) / 2) - 1px); */
   position: absolute;
-  top: 5px;
-  left: 0;
-  padding-left: 5px;
+  top: 50%;
+  left: var(--wrapper-padding);
+  padding-left: var(--wrapper-padding);
+  backface-visibility: hidden;
+  transform: translateY(-50%);
 }
 
 s-base.pos-within > .wrapper {
@@ -100,7 +109,35 @@ s-base.pos-within > .wrapper {
 
 s-base.pos-within:focus-within > label,
 s-base.pos-within[is-dirty='true'] > label {
-  top: -65%;
+  top: -20px;
+  padding: 5px;
+  border: 1px solid white;
+  border-right: none;
+  color: white;
+  transform: none;
+}
+
+s-base.pos-within:focus-within > label:after {
+  content: '';
+  position: absolute;
+  border-right: 1px solid white;
+  height: 100%;
+  top: 0;
+  right: 0;
+  backface-visibility: hidden;
+  transition: var(--smooth-transition);
+}
+
+s-base.pos-within[is-dirty='true'] > label:after {
+  content: '';
+  position: absolute;
+  border-right: 1px solid white;
+  transform: skewX(24deg);
+  height: calc(100% + 1px);
+  top: -1px;
+  right: -5px;
+  border-top-right-radius: 3px;
+  backface-visibility: hidden;
 }
 
 s-base:focus-within > .wrapper,

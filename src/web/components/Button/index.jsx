@@ -8,20 +8,22 @@ import {generateClassNames} from 'web/utils/common';
 // Stylesheet(s)
 import './styles.css';
 
-const Button = ({classes, disabled, id, label, role, tooltip, onChange}) => {
+const Button = ({classes, disabled, id, label, role, tooltip, onClick}) => {
   const className = generateClassNames({
     [`btn-${role}`]: true,
+    ...classes
   });
 
-  return <button
-    className={className}
-    disabled={disabled}
-    id={id}
-    title={tooltip}
-    onChange={onChange}
-  >
-    {label}
-  </button>
+  return <fieldset id={id}>
+    <button
+      className={className}
+      disabled={disabled}
+      title={tooltip}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  </fieldset>;
 };
 Button.propTypes = {
   classes: PropTypes.objectOf(PropTypes.bool),
@@ -30,7 +32,7 @@ Button.propTypes = {
   label: PropTypes.string,
   role: PropTypes.oneOf(['accented', 'secondary', 'simple', 'toggled']),
   tooltip: PropTypes.string,
-  onChange: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired
 };
 Button.defaultProps = {
   classes: {},
@@ -40,3 +42,5 @@ Button.defaultProps = {
   role: 'accented',
   label: ''
 };
+
+export default Button;

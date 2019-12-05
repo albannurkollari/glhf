@@ -1,5 +1,9 @@
 body {
   margin: 0;
+  background: #F3904F;
+  background: -webkit-linear-gradient(to top, #3B4371, #F3904F);
+  background: linear-gradient(to top, #3B4371, #F3904F);
+  height: 100vh;
 }
 
 body, body * {

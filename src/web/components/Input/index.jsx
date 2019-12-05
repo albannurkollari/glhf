@@ -9,7 +9,7 @@ import {generateClassNames} from 'web/utils/common';
 import './styles.css';
 const FOCUS_EVENTS = ['focusin', 'focusout'];
 
-const Input = ({id, label, classes, disabled, auto, placeholder, value, onChange}) => {
+const Input = ({auto, classes, customEvents, disabled, id, label, placeholder, value, onChange}) => {
   const positioned = label ? {[`pos-${label?.pos ?? 'left'}`] : true} : {};
   const className = generateClassNames({
     'ninjaurl__common-input': true,
@@ -36,9 +36,7 @@ const Input = ({id, label, classes, disabled, auto, placeholder, value, onChange
     };
   }, []);
 
-  logger(isFocused);
-
-  return <fieldset {...{...(id && {id})}}>
+  return <fieldset {...{...(id && {id})}} title={value}>
     <div className={className} disabled={disabled} is-dirty={isDirty.toString()}>
       {label && <label {...{...(fieldId && {htmlFor: fieldId})}}>{label?.value ?? label}</label>}
       <div className='wrapper'>
@@ -54,6 +52,7 @@ const Input = ({id, label, classes, disabled, auto, placeholder, value, onChange
             setIsDirty(value !== '');
             onChange?.(value);
           }}
+          {...customEvents}
         />
       </div>
     </div>
@@ -61,6 +60,11 @@ const Input = ({id, label, classes, disabled, auto, placeholder, value, onChange
 };
 
 Input.propTypes = {
+  auto: PropTypes.oneOf(['current-password', 'new-password', 'username', 'off']),
+  button: PropTypes.element,
+  classes: PropTypes.objectOf(PropTypes.bool),
+  customEvents: PropTypes.objectOf(PropTypes.func),
+  disabled: PropTypes.bool,
   id: PropTypes.string,
   label: PropTypes.oneOfType([
     PropTypes.string,
@@ -69,9 +73,6 @@ Input.propTypes = {
       pos: PropTypes.oneOf(['top', 'right', 'left', 'within'])
     })
   ]),
-  disabled: PropTypes.bool,
-  classes: PropTypes.objectOf(PropTypes.bool),
-  auto: PropTypes.oneOf(['current-password', 'new-password', 'username', 'off']),
   placeholder: PropTypes.string,
   value: PropTypes.oneOfType([
     PropTypes.string,
@@ -81,12 +82,13 @@ Input.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 Input.defaultProps = {
+  auto: 'off',
+  classes: {},
+  customEvents: {},
+  disabled: false,
   id: undefined,
   label: undefined,
-  disabled: false,
-  classes: {},
   placeholder: 'Please type something...',
-  auto: 'off',
   value: ''
 };
 

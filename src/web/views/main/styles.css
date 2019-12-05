@@ -1,14 +1,125 @@
+@value s-shortenURL #ninjaurl__url-input;
+@value s-btn: #ninjaurl__url-shorten-btn > button;
+@value s-url-label: .ninjaurl__common-input > label;
+
 main {
+  --smooth-transition: all .25s ease-in-out;
+  --light-orange: #d2bbbb;
+
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 0 auto;
+  padding: 15px;
   width: 100%;
-  max-width: 960px;
+  height: 90%;
+  max-width: 720px;
   min-width: 320px;
-  background-color: #ececec;
   min-height: 400px;
   overflow: hidden;
+}
+
+.ninjaurl__headers {
+  color: #ffdacf;
+  margin-bottom: 20px;
+}
+
+s-shortenURL > div {
+  display: grid;
+  row-gap: 10px;
+  grid-auto-rows: 2fr 1fr;
+  justify-items: center;
+  line-height: 1;
+  padding: 5px;
+}
+
+s-url-label {
+  color: var(--light-orange);
+}
+
+s-btn {
+  width: 80px;
+  padding: 8px 12px;
+  outline: none;
+  border: 1px solid silver;
+  border-radius: 2px;
+  background-color: transparent;
+  color: var(--light-orange);
+  margin-top: 15px;
+  cursor: pointer;
+  
+  transition: var(--smooth-transition);
+  overflow: hidden;
+}
+
+s-btn:before {
+  content: '';
+  width: 0;
+  height: 0;
+  opacity: 0;
+  left: 50%;
+  top: 50%;
+  background-color: #414670;
+  position: absolute;
+  transition: var(--smooth-transition);
+  /* transition: .4s all ease-in-out; */
+  transform: rotate(0deg);
+  z-index: -1;
+}
+
+s-btn:hover:before {
+  width: 200%;
+  height: 500%;
+  opacity: 1;
+  left: -50%;
+  top: -200%;
+
+  transform: rotate(80deg);
+}
+
+s-btn:hover {
+  border-color: transparent;
+}
+
+s-btn:active {
+  -moz-box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.25);
+  -webkit-box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.25);
+}
+
+.ninjaurl__url-shortened {
+  margin-top: 15px;
+  min-height: 40px;
+  border: 1px solid #cacaca;
+  padding: 5px 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 2px;
+}
+
+.ninjaurl__url-close-btn {
+  display: block;
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  color: #cacaca;
+}
+
+.ninjaurl__url-shortened > a {
+  text-decoration: none;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  color: white;
+  text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
+  font-size: 20px;
 }

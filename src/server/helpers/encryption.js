@@ -1,12 +1,13 @@
 // Libraries
 require('dotenv/config');
 const crypto = require('crypto');
+const md5 = require('md5');
 
 const {ENCRYPTION_ALGORITHM} = process.env;
 const IV_HEX = 'hex';
 
+// To be used...
 const decrypt = ({data, iv} = {}) => {
-  debugger;
   try {
     const decipher = crypto.createDecipheriv(
       ENCRYPTION_ALGORITHM,
@@ -23,9 +24,8 @@ const decrypt = ({data, iv} = {}) => {
   }
 };
 
+// To be used...
 const encrypt = url => {
-  debugger;
-  console.log(ENCRYPTION_ALGORITHM);
   try {
     const key = crypto.randomBytes(32);
     const iv = crypto.randomBytes(16);
@@ -43,4 +43,6 @@ const encrypt = url => {
   }
 };
 
-module.exports = {decrypt, encrypt};
+const hashURL = url => md5(url).slice(0, 6);
+
+module.exports = {decrypt, encrypt, hashURL};

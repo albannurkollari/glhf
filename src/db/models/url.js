@@ -1,14 +1,15 @@
 const {model, Schema} = require('mongoose');
 
 // Schema
-module.exports = model('URL', Schema({
+module.exports = model('URL', new Schema({
   value: {
     type: String,
-    required: true
-  },
-  hash: {
-    type: String,
     required: true,
+    unique: true
+  },
+  url: {
+    type: String,
+    required: true
   },
   createdAt: {
     type: Date,

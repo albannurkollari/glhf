@@ -1,2 +1,0 @@
-https://google.com/test?bani=123
-https://gmail.com/test?dona=123

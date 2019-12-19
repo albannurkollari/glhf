@@ -15,7 +15,7 @@ const webpackMiddlewares = {
 const {projectPaths: PATHS} = process;
 
 // Helpers
-const connectToMongoDB = require('./helpers/connection'); 
+const connectToMongoDB = require('./helpers/connection');
 const ServerError = require('./helpers/errors');
 const doRedirect = require('./helpers/redirect');
 
@@ -69,22 +69,24 @@ class Router {
       });
 
       // Initiate routes
-      allRoutes.map(file => {
-        const fileName = `/${file.replace(/\.js$/, '')}`;
-        const router = express.Router();
-        const routes = require(path.resolve(PATHS.ROUTES, file));
+      allRoutes
+        .filter(file => /\.js$/.test(file))
+        .map(file => {
+          const fileName = `/${file.replace(/\.js$/, '')}`;
+          const router = express.Router();
+          const routes = require(path.resolve(PATHS.ROUTES, file));
 
-        routes.forEach(({handler, method, path = DEFAULT_PATH}, i) => {
-          const count = i + 1;
-          const symbol = (i === 0 ? '\n' : '') + chalk.hex('#1e90ff')(count % 2 ? '└┬┴┬┘' : '┌┴┬┴┐');
-          const httpMethod = chalk.hex('#ffd36c')(method.toUpperCase());
+          routes.forEach(({handler, method, path = DEFAULT_PATH}, i) => {
+            const count = i + 1;
+            const symbol = (i === 0 ? '\n' : '') + chalk.hex('#1e90ff')(count % 2 ? '└┬┴┬┘' : '┌┴┬┴┐');
+            const httpMethod = chalk.hex('#ffd36c')(method.toUpperCase());
 
-          router[method](path, handler);
-          logs.push({count, fileName, httpMethod, path, symbol});
+            router[method](path, handler);
+            logs.push({count, fileName, httpMethod, path, symbol});
+          });
+
+          app.use(fileName, router);
         });
-
-        app.use(fileName, router);
-      });
 
       this.devServerInstance.waitUntilValid(() => {
         logs.forEach(({count, fileName, httpMethod, path, symbol}) => {
@@ -117,7 +119,7 @@ class App extends Router {
     if (!await this.initialized) {
       return;
     }
-    
+
     this.isConnected = await this.dbConnect(process.env);
 
     if (!this.isConnected) {

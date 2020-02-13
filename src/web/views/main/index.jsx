@@ -52,8 +52,8 @@ const Main = () => {
 
   return <>
     <div className='ninjaurl__headers'>
-      <p>Worry not!</p>
-      <p>Ninjurl will slice and dice, chop and mop your desired URL..for free!</p>
+      <p>NINJALINK</p>
+      <p>Slices, chops and mops your desired <b>URL</b>...for free!</p>
     </div>
     <Input
       id='ninjaurl__url-input'
@@ -69,7 +69,13 @@ const Main = () => {
     />
     {shortenedURL &&
       <div className='ninjaurl__url-shortened'>
-        <span className='ninjaurl__url-close-btn' onClick={() => setShortenedURL('')}>x</span>
+        <span
+          className='ninjaurl__url-close-btn'
+          onClick={() => {
+            setShortenedURL('');
+            setURL('');
+          }}>x
+        </span>
         <a href={shortenedURL} target={'_blank'}>{generateURL(shortenedURL).toString()}</a>
       </div>
     }

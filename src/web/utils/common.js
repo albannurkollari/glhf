@@ -11,15 +11,15 @@ export const generateClassNames = (classes = {}) => {
 };
 
 export const generateURL = (path, queryProps = {}, base = '') => {
-  if (path && path.constructor !== String) {
+  if (path?.constructor !== String) {
     throw new Error(`Expected path to be a string but received ${path} instead!`);
   }
 
-  if (queryProps && queryProps.constructor !== Object) {
+  if (queryProps?.constructor !== Object) {
     throw new Error(`Expected query props to be an object but received ${queryProps} instead!`);
   }
 
-  if (base && base.constructor !== String) {
+  if (base?.constructor !== String) {
     throw new Error(`Expected URL base to be a string but received ${base} instead!`);
   }
 

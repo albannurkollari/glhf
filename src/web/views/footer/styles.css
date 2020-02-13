@@ -9,3 +9,7 @@ footer {
   text-align: center;
   line-height: 1;
 }
+
+.ninjaurl__footer > p {
+  margin: 0;
+}

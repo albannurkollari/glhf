@@ -21,7 +21,7 @@ const Button = ({classes, disabled, id, label, role, tooltip, onClick}) => {
       title={tooltip}
       onClick={onClick}
     >
-      {label}
+      <label className='btn-label'>{label}</label>
     </button>
   </fieldset>;
 };

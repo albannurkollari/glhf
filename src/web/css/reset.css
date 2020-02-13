@@ -1,8 +1,14 @@
+html {
+  --base-color-one: #3B4371;
+  --base-color-two: #F3904F;
+  background-color: var(--base-color-one);
+}
+
 body {
   margin: 0;
-  background: #F3904F;
-  background: -webkit-linear-gradient(to top, #3B4371, #F3904F);
-  background: linear-gradient(to top, #3B4371, #F3904F);
+  background: var(--base-color-two);
+  background: -webkit-linear-gradient(to top, var(--base-color-one), var(--base-color-two));
+  background: linear-gradient(to top, var(--base-color-one), var(--base-color-two));
   height: 100vh;
 }
 

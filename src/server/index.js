@@ -1,6 +1,7 @@
 // Libraries and enviromental configs
 require('../../paths');
 require('dotenv/config');
+
 const chalk = require('chalk');
 const express = require('express');
 const fs = require('fs');
@@ -12,7 +13,6 @@ const webpackMiddlewares = {
   dev: require('webpack-dev-middleware'),
   hot: require('webpack-hot-middleware')
 };
-const {projectPaths: PATHS} = process;
 
 // Helpers
 const connectToMongoDB = require('./helpers/connection');
@@ -31,12 +31,11 @@ class Router {
       throw new ServerError(1000);
     }
 
-    const isProduction = generateArgs('p');
-    const {devServer, ...config} = generateWebpackConfig({isProduction});
+    const {devServer, isProduction, ...config} = generateWebpackConfig();
     const compiler = webpack(config);
 
     if (process.env.NODE_ENV === undefined) {
-      process.env.NODE_ENV = isProduction ? 'production' : 'development';
+      process.env.NODE_ENV = config.mode;
     }
 
     this.app = app;
@@ -46,8 +45,8 @@ class Router {
       app.use(express.json());
 
       if (isProduction) {
-        app.use(express.static(PATHS.BUILD));
-        app.get('/', (_, res) => res.sendFile(PATHS.STATIC_WEB));
+        app.use(express.static(process.paths.BUILD));
+        app.get('/', (_, res) => res.sendFile(process.paths.STATIC_WEB));
       }
       else {
         this.devServerInstance = webpackMiddlewares.dev(compiler, devServer);
@@ -57,7 +56,7 @@ class Router {
         app.use(this.HRMinstance);
       }
 
-      const allRoutes = fs.readdirSync(PATHS.ROUTES);
+      const allRoutes = fs.readdirSync(process.paths.ROUTES);
       const logs = [];
 
       app.get('/:hashedURL', ({path}, res, next) => {
@@ -74,7 +73,7 @@ class Router {
         .map(file => {
           const fileName = `/${file.replace(/\.js$/, '')}`;
           const router = express.Router();
-          const routes = require(path.resolve(PATHS.ROUTES, file));
+          const routes = require(path.resolve(process.paths.ROUTES, file));
 
           routes.forEach(({handler, method, path = DEFAULT_PATH}, i) => {
             const count = i + 1;

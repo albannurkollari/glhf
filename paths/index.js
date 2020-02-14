@@ -1,19 +1,14 @@
 const path = require('path');
 
-const PATHS = Object.entries({
+process.paths = Object.entries({
   APP: '../src/web/app.js',
   BUILD: '../build',
+  DEV_WEB: '../src/web/index.html',
+  ENTRY_CSS: '../src/web/css/reset.css',
   MODULES: '../node_modules',
+  ROUTES: '../src/server/routes',
   SRC: '../src',
   SERVER_ROUTES_DIR: '../src/server/routes',
   STATIC_WEB: '../build/index.html',
-  DEV_WEB: '../src/web/index.html',
-  ROUTES: '../src/server/routes',
-  ENTRY_CSS: '../src/web/css/reset.css'
+  WEBPACK_CONFIG: '../configs/webpack',
 }).reduce((acc, [k, v]) => ({...acc, [k]: path.resolve(__dirname, v)}), {});
-
-PATHS.PUBLIC = process.env.PUBLIC_PATH || '';
-
-process.projectPaths = PATHS;
-
-module.exports = PATHS;
